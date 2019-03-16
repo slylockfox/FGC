@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="MattHoloDrive", group="Holobot")
 public class MattHoloDrive extends LinearOpMode {
@@ -31,9 +32,27 @@ public class MattHoloDrive extends LinearOpMode {
     private DcMotor m2 = null;
     private DcMotor m3 = null;
     
+    private Servo liftBase;
+    private Servo liftLifter;
+    
     BNO055IMU imu;
     @Override
     public void runOpMode() {
+        
+        ElapsedTime liftBaseTimer;
+        ElapsedTime liftLifterTimer;
+        double liftBaseTarget;
+        double liftLifterTarget;
+        
+        liftBase = hardwareMap.servo.get("liftBase");
+        liftLifter = hardwareMap.servo.get("liftLifter");
+        liftBaseTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        liftLifterTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        liftBaseTarget = 0.6;
+        liftLifterTarget = 0.3;
+        liftBaseTimer.reset();
+        liftLifterTimer.reset();
+        
         front_left_wheel = hardwareMap.dcMotor.get("motor3"); m3 = front_left_wheel;
         back_left_wheel = hardwareMap.dcMotor.get("motor2"); m2 = back_left_wheel;
         back_right_wheel = hardwareMap.dcMotor.get("motor1"); m1 = back_right_wheel;
@@ -71,9 +90,40 @@ public class MattHoloDrive extends LinearOpMode {
             drive();
             resetAngle();
             //driveSimple();
+            
+          // operate lift (copied from OmniBotLiftTest blocks)
+          if (gamepad2.dpad_up) {
+            liftBaseTarget = 0.5;
+            liftLifterTarget = 0.68;
+          } else if (gamepad2.dpad_down) {
+            liftBaseTarget = 0.55;
+            liftLifterTarget = 0.4;
+          } else if (gamepad2.b) {
+            liftBaseTarget = 0.6;
+            liftLifterTarget = 0.3;
+          } else {
+            if (gamepad2.left_stick_y < -0.2 && liftLifterTimer.time() > 100) {
+              liftLifterTimer.reset();
+              liftLifterTarget = liftLifterTarget + 0.01;
+            } else if (gamepad2.left_stick_y > 0.2 && liftLifterTimer.time() > 100) {
+              liftLifterTimer.reset();
+              liftLifterTarget = liftLifterTarget - 0.01;
+            } else if (gamepad2.left_stick_x < -0.2 && liftBaseTimer.time() > 500) {
+              liftBaseTimer.reset();
+              liftBaseTarget = liftBaseTarget + 0.01;
+            } else if (gamepad2.left_stick_x > 0.2 && liftBaseTimer.time() > 500) {
+              liftBaseTimer.reset();
+              liftBaseTarget = liftBaseTarget - 0.01;
+            } else {
+            }
+          }
+          liftBase.setPosition(liftBaseTarget);
+          liftLifter.setPosition(liftLifterTarget);
+
             telemetry.update();
         }
     }
+    
     public void driveSimple(){
         double power = .5;
         if(gamepad1.dpad_up){ //Forward
