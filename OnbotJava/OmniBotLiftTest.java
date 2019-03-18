@@ -35,26 +35,26 @@ public class omnibotlifttest extends LinearOpMode {
     // Put run blocks here.
     while (opModeIsActive()) {
       // Put loop blocks here.
-      if (gamepad1.dpad_up) {
+      if (gamepad2.dpad_up) {
         liftBaseTarget = 0.5;
         liftLifterTarget = 0.68;
-      } else if (gamepad1.dpad_down) {
+      } else if (gamepad2.dpad_down) {
         liftBaseTarget = 0.55;
         liftLifterTarget = 0.4;
-      } else if (gamepad1.b) {
+      } else if (gamepad2.b) {
         liftBaseTarget = 0.6;
         liftLifterTarget = 0.3;
       } else {
-        if (gamepad1.left_stick_y < -0.2 && liftLifterTimer.time() > 100) {
+        if (gamepad2.left_stick_y < -0.2 && liftLifterTimer.time() > 100) {
           liftLifterTimer.reset();
           liftLifterTarget = liftLifterTarget + 0.01;
-        } else if (gamepad1.left_stick_y > 0.2 && liftLifterTimer.time() > 100) {
+        } else if (gamepad2.left_stick_y > 0.2 && liftLifterTimer.time() > 100) {
           liftLifterTimer.reset();
           liftLifterTarget = liftLifterTarget - 0.01;
-        } else if (gamepad1.left_stick_x < -0.2 && liftBaseTimer.time() > 500) {
+        } else if (gamepad2.left_stick_x < -0.2 && liftBaseTimer.time() > 500) {
           liftBaseTimer.reset();
           liftBaseTarget = liftBaseTarget + 0.01;
-        } else if (gamepad1.left_stick_x > 0.2 && liftBaseTimer.time() > 500) {
+        } else if (gamepad2.left_stick_x > 0.2 && liftBaseTimer.time() > 500) {
           liftBaseTimer.reset();
           liftBaseTarget = liftBaseTarget - 0.01;
         } else {
