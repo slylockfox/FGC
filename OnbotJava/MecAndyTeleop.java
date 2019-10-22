@@ -63,6 +63,7 @@ public class MecaAndyTeleop extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         
         // remap axes in order to  use with vertically mounted REV hub
+		// see https://ftcforum.usfirst.org/forum/ftc-technology/53812-mounting-the-revhub-vertically
         
         byte AXIS_MAP_CONFIG_BYTE = 0x6; //This is what to write to the AXIS_MAP_CONFIG register to swap x and z axes
         byte AXIS_MAP_SIGN_BYTE = 0x1; //This is what to write to the AXIS_MAP_SIGN register to negate the z axis
