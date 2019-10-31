@@ -25,6 +25,8 @@ public class MecaBildaTeleop extends LinearOpMode {
     boolean DecreaseLiftPos;
     double LiftStepCount;
     double LiftMaxCount;
+    
+    private Servo arm;
 
     float rotate_angle = 0;
     double reset_angle = 0;
@@ -67,6 +69,7 @@ public class MecaBildaTeleop extends LinearOpMode {
         back_right_wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift = hardwareMap.dcMotor.get("lift");
+        arm = hardwareMap.servo.get("arm");
         
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
@@ -100,12 +103,18 @@ public class MecaBildaTeleop extends LinearOpMode {
         LiftPos = 0;
         DecreaseLiftPos = false;
         IncreaseLiftPos = false;
-    
-        while(!opModeIsActive()){}
+
+        arm.setPosition(0.5);
+        sleep(1000);
+        arm.setPosition(0.4);
+        sleep(1000);
+        arm.setPosition(0.2);
+
+        while(!opModeIsActive()){} // like waitforstart
 
         lift.setTargetPosition(0);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        
         while(opModeIsActive()){
             lift();            
             
