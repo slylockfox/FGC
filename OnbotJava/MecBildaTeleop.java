@@ -106,12 +106,8 @@ public class MecaBildaTeleop extends LinearOpMode {
         DecreaseLiftPos = false;
         IncreaseLiftPos = false;
 
-        grip.setPosition(0.35);
-        arm.setPosition(0.5);
-        sleep(1000);
-        arm.setPosition(0.4);
-        sleep(1000);
-        arm.setPosition(0.2);
+        grip.setPosition(0.2);
+        arm.setPosition(0.9);
 
         while(!opModeIsActive() && !isStopRequested()){} // like waitforstart
 
@@ -121,6 +117,7 @@ public class MecaBildaTeleop extends LinearOpMode {
         while(opModeIsActive()){
                 lift();            
                 grip();
+                wrist();
                 
                 drive();
                 resetAngle();
@@ -131,7 +128,7 @@ public class MecaBildaTeleop extends LinearOpMode {
     }
     
     public void driveSimple(){
-        double power = .5;
+        double power = 0.5;
         if(gamepad1.dpad_up){ //Forward
             front_left_wheel.setPower(-power);
             back_left_wheel.setPower(-power);
@@ -169,14 +166,24 @@ public class MecaBildaTeleop extends LinearOpMode {
             front_right_wheel.setPower(0);
         }
     }
+    
+    public void wrist() {
+         if (gamepad1.x) {
+            arm.setPosition(0.7);
+         } else if (gamepad1.y){
+            arm.setPosition(0.5);
+         } else if (gamepad1.b) {
+            arm.setPosition(0.15);
+         }
+    }
 
     public void grip() {
         double grippos;
         grippos = grip.getPosition();
         if (gamepad1.right_bumper) {
-          grippos = 0.5;
+          grippos = 0.2; // open
         } else if (gamepad1.right_trigger > 0.5) {
-          grippos = 0.6;
+          grippos = 0.3; // closed
         }
         grip.setPosition(grippos);
     }
@@ -199,9 +206,11 @@ public class MecaBildaTeleop extends LinearOpMode {
     }
     
     public void drive() {
-        double Protate = gamepad1.right_stick_x/4;
-        double stick_x = gamepad1.left_stick_x * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/2); //Accounts for Protate when limiting magnitude to be less than 1
-        double stick_y = gamepad1.left_stick_y * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/2);
+        double drivescale = 1.5;
+        double rotatescale = 2;
+        double Protate = gamepad1.right_stick_x/rotatescale;
+        double stick_x = gamepad1.left_stick_x * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/drivescale); //Accounts for Protate when limiting magnitude to be less than 1
+        double stick_y = gamepad1.left_stick_y * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/drivescale);
         double theta = 0;
         double Px = 0;
         double Py = 0;
@@ -222,16 +231,16 @@ public class MecaBildaTeleop extends LinearOpMode {
         
         //Linear directions in case you want to do straight lines.
         if(gamepad1.dpad_right){
-            stick_x = 0.5;
+            stick_x = 0.7;
         }
         else if(gamepad1.dpad_left){
-            stick_x = -0.5;
+            stick_x = -0.7;
         }
         if(gamepad1.dpad_up){
-            stick_y = -0.5;
+            stick_y = -0.7;
         }
         else if(gamepad1.dpad_down){
-            stick_y = 0.5;
+            stick_y = 0.7;
         }
         
         
