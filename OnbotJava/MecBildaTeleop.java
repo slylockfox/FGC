@@ -27,6 +27,7 @@ public class MecaBildaTeleop extends LinearOpMode {
     double LiftMaxCount;
     
     private Servo arm;
+    private Servo grip;
 
     float rotate_angle = 0;
     double reset_angle = 0;
@@ -70,6 +71,7 @@ public class MecaBildaTeleop extends LinearOpMode {
 
         lift = hardwareMap.dcMotor.get("lift");
         arm = hardwareMap.servo.get("arm");
+        grip = hardwareMap.servo.get("grip");
         
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
@@ -104,25 +106,27 @@ public class MecaBildaTeleop extends LinearOpMode {
         DecreaseLiftPos = false;
         IncreaseLiftPos = false;
 
+        grip.setPosition(0.35);
         arm.setPosition(0.5);
         sleep(1000);
         arm.setPosition(0.4);
         sleep(1000);
         arm.setPosition(0.2);
 
-        while(!opModeIsActive()){} // like waitforstart
+        while(!opModeIsActive() && !isStopRequested()){} // like waitforstart
 
         lift.setTargetPosition(0);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
         while(opModeIsActive()){
-            lift();            
-            
-            drive();
-            resetAngle();
-            //driveSimple();
-            
-            telemetry.update();
+                lift();            
+                grip();
+                
+                drive();
+                resetAngle();
+                //driveSimple();
+                
+                telemetry.update();
         }
     }
     
@@ -166,6 +170,17 @@ public class MecaBildaTeleop extends LinearOpMode {
         }
     }
 
+    public void grip() {
+        double grippos;
+        grippos = grip.getPosition();
+        if (gamepad1.right_bumper) {
+          grippos = 0.5;
+        } else if (gamepad1.right_trigger > 0.5) {
+          grippos = 0.6;
+        }
+        grip.setPosition(grippos);
+    }
+    
     public void lift() {
         if (gamepad1.left_bumper) {
           IncreaseLiftPos = true;
