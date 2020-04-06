@@ -135,7 +135,7 @@ public class MecaBildaTeleopNoLift extends LinearOpMode {
     }
 
     public void drive() {
-        double drivescale = 1.7; 
+        double drivescale = 1.9; 
         double rotatescale = 1; 
         double Protate = -gamepad1.right_stick_x/rotatescale;
         double stick_x = -gamepad1.left_stick_x * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)*drivescale); //Accounts for Protate when limiting magnitude to be less than 1
@@ -178,25 +178,22 @@ public class MecaBildaTeleopNoLift extends LinearOpMode {
         Py = Math.sqrt(Math.pow(stick_x, 2) + Math.pow(stick_y, 2)) * (Math.sin(theta - Math.PI / 4));
         
         telemetry.addData("Gyro", getHeading());
+        
+        double front_left_power = Py - Protate;
+        double back_left_power = Px - Protate;
+        double back_right_power = Py + Protate;
+        double front_right_power = Px + Protate;
+        front_left_wheel.setVelocity(front_left_power * MecaBildaPIDUtil.MaxVInTicks);
+        back_left_wheel.setVelocity(back_left_power * MecaBildaPIDUtil.MaxVInTicks);
+        back_right_wheel.setVelocity(back_right_power * MecaBildaPIDUtil.MaxVInTicks);
+        front_right_wheel.setVelocity(front_right_power * MecaBildaPIDUtil.MaxVInTicks);
 
-        telemetry.addData("Stick_X", stick_x);
-        telemetry.addData("Stick_Y", stick_y);
-        telemetry.addData("Magnitude",  Math.sqrt(Math.pow(stick_x, 2) + Math.pow(stick_y, 2)));
-        telemetry.addData("Front Left", Py - Protate);
-        telemetry.addData("Back Left", Px - Protate);
-        telemetry.addData("Back Right", Py + Protate);
-        telemetry.addData("Front Right", Px + Protate);
+        // report velicity as a fraction
+        telemetry.addData("lf V", front_left_wheel.getVelocity() / MecaBildaPIDUtil.MaxVInTicks );
+        telemetry.addData("rf V", front_right_wheel.getVelocity() / MecaBildaPIDUtil.MaxVInTicks);
+        telemetry.addData("lr V", back_left_wheel.getVelocity() / MecaBildaPIDUtil.MaxVInTicks);
+        telemetry.addData("rr V", back_right_wheel.getVelocity() / MecaBildaPIDUtil.MaxVInTicks);
         
-        // to make sure encoder wires are connected
-        telemetry.addData("lf", front_left_wheel.getCurrentPosition());
-        telemetry.addData("rf position", front_right_wheel.getCurrentPosition());
-        telemetry.addData("lr position", back_left_wheel.getCurrentPosition());
-        telemetry.addData("rr position", back_right_wheel.getCurrentPosition());
-        
-        front_left_wheel.setPower(Py - Protate);
-        back_left_wheel.setPower(Px - Protate);
-        back_right_wheel.setPower(Py + Protate);
-        front_right_wheel.setPower(Px + Protate);
     }
     public void resetAngle(){
         if(gamepad1.a){
