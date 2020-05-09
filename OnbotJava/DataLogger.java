@@ -1,7 +1,12 @@
-package org.usfirst.FTC5866.library;
+package org.firstinspires.ftc.teamcode;
+
+// https://raw.githubusercontent.com/OliviliK/FTC_Library/master/DataLogger.java
+// see http://olliesworkshops.blogspot.com/2015/11/using-excel-to-analyze-ftc-opmode.html
 
 /**
  * Created by Olavi Kamppari on 9/9/2015.
+ *
+ * Added to Github on 11/16/2015 (https://github.com/OliviliK/FTC_Library/blob/master/DataLogger.java)
  */
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +24,7 @@ public class DataLogger {
         String filePath         = directoryPath + "/" + fileName + ".csv";
 
         new File(directoryPath).mkdir();        // Make sure that the directory exists
-        
+
         try {
             writer = new FileWriter(filePath);
             lineBuffer = new StringBuffer(128);
