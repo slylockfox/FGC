@@ -21,6 +21,7 @@ public class MattHoloDrive extends LinearOpMode {
 
     float rotate_angle = 0;
     double reset_angle = 0;
+    double driveSpeedDivisor = 2;
     
     private DcMotor front_left_wheel = null;
     private DcMotor back_left_wheel = null;
@@ -164,7 +165,7 @@ public class MattHoloDrive extends LinearOpMode {
         }
     }
     public void drive() {
-        double Protate = gamepad1.right_stick_x/4;
+        double Protate = gamepad1.right_stick_x/driveSpeedDivisor;
         double stick_x = gamepad1.left_stick_x * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/2); //Accounts for Protate when limiting magnitude to be less than 1
         double stick_y = gamepad1.left_stick_y * Math.sqrt(Math.pow(1-Math.abs(Protate), 2)/2);
         double theta = 0;
@@ -187,16 +188,16 @@ public class MattHoloDrive extends LinearOpMode {
         
         //Linear directions in case you want to do straight lines.
         if(gamepad1.dpad_right){
-            stick_x = 0.5;
+            stick_x = 0.75;
         }
         else if(gamepad1.dpad_left){
-            stick_x = -0.5;
+            stick_x = -0.75;
         }
         if(gamepad1.dpad_up){
-            stick_y = -0.5;
+            stick_y = -0.75;
         }
         else if(gamepad1.dpad_down){
-            stick_y = 0.5;
+            stick_y = 0.75;
         }
         
         
