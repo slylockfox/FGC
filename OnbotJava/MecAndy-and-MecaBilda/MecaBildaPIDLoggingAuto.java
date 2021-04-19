@@ -20,44 +20,44 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
     float rotate_angle = 0;
     double reset_angle = 0;
     
-    private DcMotorEx front_left_wheel = null;
-    private DcMotorEx back_left_wheel = null;
-    private DcMotorEx back_right_wheel = null;
-    private DcMotorEx front_right_wheel = null;
+    private DcMotorExLogged front_left_wheel = null;
+    private DcMotorExLogged back_left_wheel = null;
+    private DcMotorExLogged back_right_wheel = null;
+    private DcMotorExLogged front_right_wheel = null;
 
     BNO055IMU imu;
     @Override
     public void runOpMode() {
         
-        front_left_wheel = hardwareMap.get(DcMotorEx.class, "lf");
-        back_left_wheel = hardwareMap.get(DcMotorEx.class, "lr");
-        back_right_wheel = hardwareMap.get(DcMotorEx.class, "rr");
-        front_right_wheel = hardwareMap.get(DcMotorEx.class, "rf");
+        front_left_wheel = new DcMotorExLogged (hardwareMap.get(DcMotorEx.class, "lf"), "velocitiesFL");
+        back_left_wheel = new DcMotorExLogged (hardwareMap.get(DcMotorEx.class, "lr"),  "velocitiesBL");
+        back_right_wheel = new DcMotorExLogged (hardwareMap.get(DcMotorEx.class, "rr"), "velocitiesBR");
+        front_right_wheel = new DcMotorExLogged (hardwareMap.get(DcMotorEx.class, "rf"),"velocitiesFR");
         
-        front_left_wheel.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        back_left_wheel.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        front_right_wheel.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        back_right_wheel.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        front_left_wheel.motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        back_left_wheel.motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        front_right_wheel.motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        back_right_wheel.motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        front_left_wheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        back_left_wheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        front_right_wheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        back_right_wheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        front_left_wheel.motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        back_left_wheel.motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        front_right_wheel.motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        back_right_wheel.motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        front_left_wheel.setDirection(DcMotorEx.Direction.REVERSE); 
-        back_left_wheel.setDirection(DcMotorEx.Direction.REVERSE); 
-        front_right_wheel.setDirection(DcMotorEx.Direction.FORWARD); 
-        back_right_wheel.setDirection(DcMotorEx.Direction.FORWARD); 
+        front_left_wheel.motor.setDirection(DcMotorEx.Direction.REVERSE); 
+        back_left_wheel.motor.setDirection(DcMotorEx.Direction.REVERSE); 
+        front_right_wheel.motor.setDirection(DcMotorEx.Direction.FORWARD); 
+        back_right_wheel.motor.setDirection(DcMotorEx.Direction.FORWARD); 
         
-        front_left_wheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        back_left_wheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        front_right_wheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        back_right_wheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        front_left_wheel.motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        back_left_wheel.motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        front_right_wheel.motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        back_right_wheel.motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        MecaBildaPIDUtil.SetPIDCoefficients(front_left_wheel);
-        MecaBildaPIDUtil.SetPIDCoefficients(back_left_wheel);
-        MecaBildaPIDUtil.SetPIDCoefficients(front_right_wheel);
-        MecaBildaPIDUtil.SetPIDCoefficients(back_right_wheel);
+        MecaBildaPIDUtil.SetPIDCoefficients(front_left_wheel.motor);
+        MecaBildaPIDUtil.SetPIDCoefficients(back_left_wheel.motor);
+        MecaBildaPIDUtil.SetPIDCoefficients(front_right_wheel.motor);
+        MecaBildaPIDUtil.SetPIDCoefficients(back_right_wheel.motor);
         
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
@@ -84,7 +84,6 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
         parameters.loggingEnabled      = false;
         imu.initialize(parameters);
 
-
         while(!opModeIsActive() && !isStopRequested()){} // like waitforstart
 
         if(opModeIsActive()){
@@ -92,7 +91,7 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
                 telemetry.update();
         }
     }
-    
+	
     public void driveSequence(){
         double half_speed_in_ticks = 1380; // see MecaBildaPIDTuning
         double full_speed_in_ticks = half_speed_in_ticks * 2;
@@ -105,15 +104,15 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
             back_right_wheel.setVelocity(half_speed_in_ticks);  
         }
         while (opModeIsActive() && front_left_wheel.getCurrentPosition() < 2000) {
-            front_left_wheel.setVelocity(full_speed_in_ticks);
-            front_right_wheel.setVelocity(full_speed_in_ticks);
-            back_left_wheel.setVelocity(full_speed_in_ticks);
+            front_left_wheel.setVelocity(full_speed_in_ticks);  
+            front_right_wheel.setVelocity(full_speed_in_ticks); 
+            back_left_wheel.setVelocity(full_speed_in_ticks);   
             back_right_wheel.setVelocity(full_speed_in_ticks);  
         }
-        front_left_wheel.setPower(0);
-        back_left_wheel.setPower(0);
-        back_right_wheel.setPower(0);
-        front_right_wheel.setPower(0);
+        front_left_wheel.setVelocity(0);
+        back_left_wheel.setVelocity(0);
+        back_right_wheel.setVelocity(0);
+        front_right_wheel.setVelocity(0);
         
         sleep(1000); // wait 1 sec
         
@@ -128,10 +127,10 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
             back_right_wheel.setVelocity(half_speed_in_ticks);  
             gyroAngle = getHeading();
         }
-        front_left_wheel.setPower(0);
-        back_left_wheel.setPower(0);
-        back_right_wheel.setPower(0);
-        front_right_wheel.setPower(0);
+        front_left_wheel.setVelocity(0);
+        back_left_wheel.setVelocity(0);
+        back_right_wheel.setVelocity(0);
+        front_right_wheel.setVelocity(0);
         
         sleep(1000); // wait 1 sec
         
@@ -149,10 +148,10 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
             back_left_wheel.setVelocity(full_speed_in_ticks);
             back_right_wheel.setVelocity(-full_speed_in_ticks); 
         }
-        front_left_wheel.setPower(0);
-        back_left_wheel.setPower(0);
-        back_right_wheel.setPower(0);
-        front_right_wheel.setPower(0);
+        front_left_wheel.setVelocity(0);
+        back_left_wheel.setVelocity(0);
+        back_right_wheel.setVelocity(0);
+        front_right_wheel.setVelocity(0);
                 
         sleep(1000); // wait 1 sec
         
