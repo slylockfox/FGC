@@ -91,19 +91,19 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
                 telemetry.update();
         }
     }
-	
+    
     public void driveSequence(){
         double half_speed_in_ticks = 1380; // see MecaBildaPIDTuning
         double full_speed_in_ticks = half_speed_in_ticks * 2;
         
         // Drive forward, at first slowly, then faster
-        while (opModeIsActive() && front_left_wheel.getCurrentPosition() < 1000) {
+        while (opModeIsActive() && front_left_wheel.motor.getCurrentPosition() < 1000) {
             front_left_wheel.setVelocity(half_speed_in_ticks);
             front_right_wheel.setVelocity(half_speed_in_ticks);
             back_left_wheel.setVelocity(half_speed_in_ticks);
             back_right_wheel.setVelocity(half_speed_in_ticks);  
         }
-        while (opModeIsActive() && front_left_wheel.getCurrentPosition() < 2000) {
+        while (opModeIsActive() && front_left_wheel.motor.getCurrentPosition() < 2000) {
             front_left_wheel.setVelocity(full_speed_in_ticks);  
             front_right_wheel.setVelocity(full_speed_in_ticks); 
             back_left_wheel.setVelocity(full_speed_in_ticks);   
@@ -135,14 +135,14 @@ public class MecaBildaPIDLoggingAuto extends LinearOpMode {
         sleep(1000); // wait 1 sec
         
         // Strafe left, at first slowly, then faster
-        front_left_wheel.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        while (front_left_wheel.getCurrentPosition() > -1000) {
+        front_left_wheel.motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        while (front_left_wheel.motor.getCurrentPosition() > -1000) {
             front_left_wheel.setVelocity(-half_speed_in_ticks);
             front_right_wheel.setVelocity(half_speed_in_ticks);
             back_left_wheel.setVelocity(half_speed_in_ticks);
             back_right_wheel.setVelocity(-half_speed_in_ticks); 
         }
-        while (front_left_wheel.getCurrentPosition() > -2000) {
+        while (front_left_wheel.motor.getCurrentPosition() > -2000) {
             front_left_wheel.setVelocity(-full_speed_in_ticks);
             front_right_wheel.setVelocity(full_speed_in_ticks);
             back_left_wheel.setVelocity(full_speed_in_ticks);
