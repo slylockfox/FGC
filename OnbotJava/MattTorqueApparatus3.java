@@ -8,6 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+// run the apparatus I made to measure torque from the FRC Falcon 500 motor and overdrive gearbox
+
+
 @Autonomous(name = "MattTorqueApparatus3", group = "test")
 public class MattTorqueApparatus3 extends LinearOpMode {
 
